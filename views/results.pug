@@ -1,0 +1,31 @@
+extends layout
+
+block content
+
+  if error
+    div.row
+      div.col-md-12
+        div.alert.danger
+          p= error
+
+  if message
+    div.row
+      div.col-md-12
+        div.alert.success
+          p= message
+
+  div.row
+    div.col-md-12
+      h1= title
+
+  if (results !== null && results.length)
+    div.row
+      div.col-md-12
+        ul
+          each item in results
+            li
+              a(href='#') Title
+  else
+    div.row
+      div.col-md-12
+        p No results
