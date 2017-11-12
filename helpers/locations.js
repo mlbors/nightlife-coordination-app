@@ -22,11 +22,18 @@ const self = module.exports = {
 
   checkIfIsGoing: (userData, location) => {
     return new Promise((resolve, reject) => {
+
+      if (typeof userData.going || userData.going === null) {
+        resolve(false)
+        return
+      }
+
       if (userData.going.indexOf(location) === -1) {
         resolve(false)
         return
       }
       resolve(true)
+      return
     })
   }
 

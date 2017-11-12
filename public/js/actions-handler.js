@@ -1,6 +1,6 @@
 /**
  * freeCodeCamp - Back End Development Certification - Dynamic Web Application Projects
- * Main
+ * Actions Handler
  * 
  * @author MLBORS
  * @version 1.0.0.0
@@ -12,44 +12,39 @@
 /***** MAIN *****/
 /****************/
 
-const Main = () => {
+const ActionsHandler = () => {
 
   /**********/
   /********** VARS **********/
   /**********/
 
-  /*
-   * @var Object _actionsHandler object that handles actions on buttons
-   */
-
-  var _actionsHandler = ActionsHandler()
-
   /************************************************************/
   /************************************************************/
 
   /**********/
-  /********** LOAD **********/
+  /********** HANDLE CLICK **********/
   /**********/
 
-  _load = () => {
-    
-    $(window).on('load', () => {
-      
-    })
+  _handleClick = () => {
 
-  }
+    $('a.btn.action').click((e) => {
+      e.preventDefault()
 
-  /************************************************************/
-  /************************************************************/
+      const action = $(this).attr('data-action')
 
-  /**********/
-  /********** READY **********/
-  /**********/
+      switch (action) {
 
-  _ready = () => {
+        case 'going':
+          console.log('going')
+          break
 
-    $(document).ready(() => {
-      _actionsHandler()
+        case 'not-going':
+          console.log('not going')
+          break
+
+      }
+
+      return false
     })
 
   }
@@ -61,23 +56,11 @@ const Main = () => {
   /********** INIT **********/
   /**********/
 
-  return {
-
-    init: () => {
-      _load()
-      _ready()
-    }
-      
+  return function() {
+      _handleClick()
   }
 
 }
 
 /************************************************************/
 /************************************************************/
-
-/****************/
-/***** INIT *****/
-/****************/
-
-const main = Main()
-main.init()

@@ -75,10 +75,11 @@ const self = module.exports = {
 
       if (err) return callback(err)
 
-      const count = db.collection('users').count({going: location})
-      db.close()
-      return callback(null, count)
-
+      const count = db.collection('users').count({going: location}, (err, count) => {
+        if (err) return callback(err)
+        db.close()
+        return callback(null, count)
+      })
     })
   },
     

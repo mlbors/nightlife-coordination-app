@@ -57,29 +57,31 @@ const self = module.exports = {
         const parsedData = JSON.parse(data)
 
         let mappedData = parsedData.businesses.map((value) => {
-          usersDb.allGoingValues(value.id, (err, total) => {
-            
-            if (err) reject(err)
-            value.totalGoing = total
-            value.foo = 'fii'
 
-            if (typeof user !== 'undefined' && user) {
-              usersDb.findById(user, (err, userData) => {
-                if (err) reject(err)
-                locationsHelper.checkIfIsGoing(userData, value.id).then((result) => {
-                  value.currentUserIsGoing = result
-                  console.log(value)
-                  return value
-                }).catch((err) => {
-                  reject(err)
+          return new Promise((resolve, reject) => {
+
+            usersDb.allGoingValues(value.id, (err, total) => {
+              
+              if (err) reject(err)
+              value.totalGoing = total
+  
+              if (typeof user !== 'undefined' && user) {
+                usersDb.findById(user, (err, userData) => {
+                  if (err) reject(err)
+                  locationsHelper.checkIfIsGoing(userData, value.id).then((result) => {
+                    value.currentUserIsGoing = result
+                    resolve(value)
+                    return
+                  }).catch((err) => {
+                    reject(err)
+                  })
                 })
-              })
-            } else {
-              console.log(value)
-              return value
-            }
-
-            
+              } else {
+                resolve(value)
+                return
+              }
+  
+            })
 
           })
 
