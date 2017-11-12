@@ -1,6 +1,6 @@
 /**
  * freeCodeCamp - Back End Development Certification - Dynamic Web Application Projects
- * Services Yelp
+ * Services - Yelp
  * 
  * @author MLBORS
  * @version 1.0.0.0
@@ -16,6 +16,9 @@ var express = require('express')
 var router = express.Router()
 
 const Yelp = require('yelp-api-v3')
+
+const usersDb = require('../db/users')
+const locationsHelper = require('../helpers/locations')
 
 require('dotenv').config()
 
@@ -42,14 +45,50 @@ const self = module.exports = {
 
   /*
    * @var String location
+   * @var String user id
    * @return Promise
    */
 
-  getData: (location) => {
+  getData: (location, user) => {
     return new Promise((resolve, reject) => {
       yelpApi.search({location: location, limit: 30})
       .then((data) => {
-        resolve(data)
+
+        const parsedData = JSON.parse(data)
+
+        let mappedData = parsedData.businesses.map((value) => {
+          usersDb.allGoingValues(value.id, (err, total) => {
+            
+            if (err) reject(err)
+            value.totalGoing = total
+            value.foo = 'fii'
+
+            if (typeof user !== 'undefined' && user) {
+              usersDb.findById(user, (err, userData) => {
+                if (err) reject(err)
+                locationsHelper.checkIfIsGoing(userData, value.id).then((result) => {
+                  value.currentUserIsGoing = result
+                  console.log(value)
+                  return value
+                }).catch((err) => {
+                  reject(err)
+                })
+              })
+            } else {
+              console.log(value)
+              return value
+            }
+
+            
+
+          })
+
+        })
+
+        Promise.all(mappedData).then((results) => {
+          resolve(results)
+        })
+
       })
       .catch((err) => {
         reject(err)

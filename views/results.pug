@@ -16,15 +16,23 @@ block content
 
   div.row
     div.col-md-12
-      h1= title
+      h1= title 
 
-  if (results !== null && results.length)
-    div.row
-      div.col-md-12
-        ul
-          each item in results
-            li
-              a(href='#') Title
+  if (typeof results !== 'undefined' && results !== null && results.length)
+    each item in results
+      div.row
+        div.col-md-12
+          div.row
+            div.col-md-12
+              h3= item.name
+          div.row
+            div.col-md-3
+              img(src=item.image_url class='responsive-image')
+            div.col-md-4
+              p 
+                | #{item.location.address1} <br />
+                | #{item.location.zip_code} #{item.location.city} <br />
+                | #{item.display_phone}            
   else
     div.row
       div.col-md-12

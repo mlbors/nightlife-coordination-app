@@ -30,7 +30,9 @@ const yelpService = require('../services/yelp')
 /*****/
 
 router.get('/', (req, res) => {
-  yelpService.getData(req.query.search).then((data) => {
+  yelpService.getData(req.query.search, req.user).then((data) => {
+    console.log('::: data :::')
+    console.log(data)
     res.render('results', {
       title: 'Results', 
       auth: req.isAuthenticated(),
@@ -39,6 +41,7 @@ router.get('/', (req, res) => {
       error: ''
     })
   }).catch((err) => {
+    console.log(err)
     res.render('results', {
       title: 'Results', 
       auth: req.isAuthenticated(),
