@@ -16,6 +16,8 @@ const express = require('express')
 const passport = require('passport')
 const router = express.Router()
 
+const yelpService = require('../services/yelp')
+
 /************************************************************/
 /************************************************************/
 
@@ -28,11 +30,24 @@ const router = express.Router()
 /*****/
 
 router.get('/', (req, res) => {
-	res.render('results', {
-    title: 'Results', 
-    auth: req.isAuthenticated(),
-    results: null
+  yelpService.getData(req.query.search).then((data) => {
+    res.render('results', {
+      title: 'Results', 
+      auth: req.isAuthenticated(),
+      results: data,
+      message: '',
+      error: ''
+    })
+  }).catch((err) => {
+    res.render('results', {
+      title: 'Results', 
+      auth: req.isAuthenticated(),
+      results: null,
+      message: '',
+      error: err
+    })
   })
+	
 })
 
 /************************************************************/
