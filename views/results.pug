@@ -2,6 +2,12 @@ extends layout
 
 block content
 
+  include search.pug
+
+  div.row
+    div.col-md-12
+      hr
+
   if error
     div.row
       div.col-md-12
@@ -34,9 +40,9 @@ block content
               if auth
                 p 
                   if item.currentUserIsGoing
-                    a(class='btn btn-primary not-going action' href='/search/not-going/' + item.id data-id=item.id data-action='not-going') I'm not going anymore!
+                    a(id='action-' + item.id class='btn btn-primary not-going action' href='/search/not-going/' data-id=item.id data-action='not-going') I'm not going anymore!
                   else
-                    a(class='btn btn-primary going action' href='/search/going/' + item.id data-id=item.id data-action='going') I'm going!
+                    a(id='action-' + item.id class='btn btn-primary going action' href='/search/going/' data-id=item.id data-action='going') I'm going!
               else
                 p 
                   small Please, log in to tell if you are going to this place.

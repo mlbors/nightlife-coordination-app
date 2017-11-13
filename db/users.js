@@ -45,12 +45,20 @@ const self = module.exports = {
     
     MongoClient.connect(dbUrl, (err, db) => {
 
-      if (err) return callback(err)
+      if (err) {
+        return callback(err)
+      } 
       
-      db.collection('users').findOne({_id: id}, (err, item) => {
-        if (err) return callback(err)
+      db.collection('users').findOne({
+        _id: id
+      }, (err, result) => {
+        
+        if (err) {
+          return callback(err)
+        }
+
         db.close()
-        return callback(null, item)
+        return callback(null, result)
       })
 
     })

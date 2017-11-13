@@ -43,19 +43,19 @@ passport.use(new TwitterStrategy({
     consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
     callbackURL: process.env.CALLBACK || "http://localhost:3000/auth/twitter/callback"
   },
-  function(token, tokenSecret, profile, done) {
+  (token, tokenSecret, profile, done) => {
 
-    process.nextTick(function(){
+    process.nextTick(() => {
       MongoClient.connect(dbUrl, (err, db) => {
 
-        const User = db.collection('users')
-        User.findOne({
+        const user = db.collection('users')
+        user.findOne({
           'token': token
-        }, function(err,user) {
+        }, (err, userData) => {
 
           if (err) return done(err)
 
-            if (!user) {
+            if (!userData) {
 
               const newUser = {
                 _id: shortid.generate(),
@@ -63,12 +63,13 @@ passport.use(new TwitterStrategy({
                 displayName: profile.displayName
               }
 
-              User.insert(newUser);
-              return done(null, newUser)
-
+              user.insertOne(newUser, (err, res) => {
+                return done(null, newUser)
+              })
+            
             }
 
-            return done(null, user)
+            return done(null, userData)
 
         })
         

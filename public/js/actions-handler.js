@@ -22,30 +22,83 @@ const ActionsHandler = () => {
   /************************************************************/
 
   /**********/
+  /********** MAKE REQUEST **********/
+  /**********/
+
+  /*
+   * @var String url
+   * @var String location
+   * @var String action
+   */
+
+  _makeRequest = (url, location, action) => {
+    return $.ajax({
+      url: window.location.origin + url,
+      type: 'POST',
+      cache: false,
+      dataType: 'json',
+      data: {
+        location,
+        action
+      },
+      succes: (result) => {
+        return {error: null, data: result}
+      },
+      error: (err) => {
+        return {error: err}
+      }
+    })
+  }
+
+  /************************************************************/
+  /************************************************************/
+
+  /**********/
   /********** HANDLE CLICK **********/
   /**********/
 
   _handleClick = () => {
+    return () => {
+      $(document).on('click', 'a.btn.action', (e) => {
+        e.preventDefault()
 
-    $('a.btn.action').click((e) => {
-      e.preventDefault()
+        const target = $(e.currentTarget)
+        const url = target.attr('href')
+        const action = target.attr('data-action')
+        const id = target.attr('data-id')
+        const parent = $('#' + id)
+        const total = parent.find('span.total')
 
-      const action = $(this).attr('data-action')
+        _makeRequest(url, id, action).then((data) => {
 
-      switch (action) {
+          switch (action) {
+            
+            case 'going':
+              target.attr('href', '/search/not-going/')
+              target.attr('data-action', 'not-going')
+              target.html("I'm not going anymore!")
+              total.html(data.count)
+              break
+    
+            case 'not-going':
+              target.attr('href', '/search/going/')
+              target.attr('data-action', 'going')
+              target.html("I'm going!")
+              total.html(data.count)
+              break
+    
+          }
 
-        case 'going':
-          console.log('going')
-          break
+          return false
 
-        case 'not-going':
-          console.log('not going')
-          break
+        }).catch((err) => {
+          console.warn('Error during registration...')
+          console.error(err)
+          return false
+        })
 
-      }
-
-      return false
-    })
+      })
+    }
 
   }
 
@@ -56,11 +109,11 @@ const ActionsHandler = () => {
   /********** INIT **********/
   /**********/
 
-  return function() {
-      _handleClick()
+  return {
+    init: () => {
+      const handler = _handleClick()
+      handler()
+    }
   }
 
 }
-
-/************************************************************/
-/************************************************************/

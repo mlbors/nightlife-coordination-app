@@ -1,6 +1,6 @@
 /**
  * freeCodeCamp - Back End Development Certification - Dynamic Web Application Projects
- * Helpers - locations
+ * Helpers - Users
  * 
  * @author MLBORS
  * @version 1.0.0.0
@@ -17,34 +17,28 @@ const usersDb = require('../db/users')
 /************************************************************/
 /************************************************************/
 
-
 const self = module.exports = {
 
-  /*****************************/
-  /***** CHECK IF IS GOING *****/
-  /*****************************/
+  /**************************/
+  /***** GET USERS DATA *****/
+  /**************************/
 
   /*
-   * @var Object data user's data
-   * @var String location 
+   * @var String id
    * @return Promise
    */
 
-  checkIfIsGoing: (data, location) => {
+  getUserData: (id) => {
     return new Promise((resolve, reject) => {
 
-      if (typeof data.going === 'undefined' || data.going === null) {
-        resolve(false)
-        return
+      if (typeof id !== 'undefined' && id !== null && id) {
+        usersDb.findById(id, (err, data) => {
+          if (err) reject(err)
+          resolve(data)
+        })  
+      } else {
+        resolve(null)
       }
-
-      if (data.going.indexOf(location) === -1) {
-        resolve(false)
-        return
-      }
-
-      resolve(true)
-      return
 
     })
   }

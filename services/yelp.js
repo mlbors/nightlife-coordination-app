@@ -18,6 +18,7 @@ var router = express.Router()
 const Yelp = require('yelp-api-v3')
 
 const usersDb = require('../db/users')
+const usersHelper = require('../helpers/users')
 const locationsHelper = require('../helpers/locations')
 
 require('dotenv').config()
@@ -56,18 +57,18 @@ const self = module.exports = {
 
         const parsedData = JSON.parse(data)
 
-        let mappedData = parsedData.businesses.map((value) => {
+        usersHelper.getUserData(user).then((userData) => {
+          
+          let mappedData = parsedData.businesses.map((value) => {
+            
+            return new Promise((resolve, reject) => {
 
-          return new Promise((resolve, reject) => {
-
-            usersDb.allGoingValues(value.id, (err, total) => {
-              
-              if (err) reject(err)
-              value.totalGoing = total
-  
-              if (typeof user !== 'undefined' && user) {
-                usersDb.findById(user, (err, userData) => {
-                  if (err) reject(err)
+              usersDb.allGoingValues(value.id, (err, total) => {
+                
+                if (err) reject(err)
+                value.totalGoing = total
+    
+                if (typeof userData !== 'undefined' && userData !== null && userData) {
                   locationsHelper.checkIfIsGoing(userData, value.id).then((result) => {
                     value.currentUserIsGoing = result
                     resolve(value)
@@ -75,20 +76,25 @@ const self = module.exports = {
                   }).catch((err) => {
                     reject(err)
                   })
-                })
-              } else {
-                resolve(value)
-                return
-              }
-  
+                } else {
+                  resolve(value)
+                  return
+                }
+    
+              })
+
             })
 
           })
 
-        })
+          Promise.all(mappedData).then((results) => {
+            resolve(results)
+          }).catch((err) => {
+            reject(err)
+          })
 
-        Promise.all(mappedData).then((results) => {
-          resolve(results)
+        }).catch((err) => {
+          reject(err)
         })
 
       })

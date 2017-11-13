@@ -22,7 +22,7 @@ const Main = () => {
    * @var Object _actionsHandler object that handles actions on buttons
    */
 
-  var _actionsHandler = ActionsHandler()
+  let _actionsHandler = ActionsHandler()
 
   /************************************************************/
   /************************************************************/
@@ -49,7 +49,7 @@ const Main = () => {
   _ready = () => {
 
     $(document).ready(() => {
-      _actionsHandler()
+      _actionsHandler.init()
     })
 
   }
@@ -62,12 +62,10 @@ const Main = () => {
   /**********/
 
   return {
-
     init: () => {
       _load()
       _ready()
     }
-      
   }
 
 }
