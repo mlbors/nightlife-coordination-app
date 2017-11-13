@@ -27,6 +27,7 @@ const search = require('./search')
 /****************/
 
 router.get('/', (req, res, next) => {
+  req.session.returnTo = req.protocol + '://' + req.get('host') + req.originalUrl
   res.render('index', {
     auth: req.isAuthenticated()
   })

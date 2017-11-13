@@ -31,6 +31,7 @@ const yelpService = require('../services/yelp')
 /*****/
 
 router.get('/', (req, res) => {
+  req.session.returnTo = req.protocol + '://' + req.get('host') + req.originalUrl
   yelpService.getData(req.query.search, req.user).then((data) => {
     res.render('results', {
       title: 'Results', 
